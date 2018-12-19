@@ -1,0 +1,7 @@
+obj
+obj/*
+lib
+lib/*
+*.o
+*.a
+*.app
