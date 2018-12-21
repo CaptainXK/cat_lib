@@ -36,4 +36,4 @@ test:test.app
 
 
 clean:
-	rm -r $(OBJ_DIR)/*.o *.app
+	rm -r $(OBJ_DIR)/*.o *.app lib/*
