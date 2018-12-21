@@ -87,25 +87,30 @@ int config_one_cosc(char * cosc_conf_str, int cosc_id)
 
 int mask_is_contiguous(uint32_t _mask){
 	
-	if(_mask == 0)
+	if(_mask == 0){
+		printf("llc mask can not be 0\n");
 		return 0;
+	}
 	
 	//find first 1 bit
-	while(_mask & 0x1 != 1){
+	while( (_mask & 1U) == 0U){
 		_mask >>= 1;
 	}
 
 	//find first 0 bit after contiguous 1 bits
-	while(_mask & 0x1 != 0){
+	while( (_mask & 1U) == 1U){
 		_mask >>= 1;
 	}
 
 	//if _mask is 0, means all 1 bits is contiguous
-	if(_mask == 0)
+	if(_mask == 0){
 		return 1;
+	}
 	//else, some 1 bits is still on high end, means _mask is not contiguous
-	else
+	else{
+		printf("llc mask is not contiguous\n");
 		return 0;
+	}
 
 }
 
@@ -135,11 +140,12 @@ void get_cos_mask_slice(uint32_t cos_mask_list[], uint32_t llc_mask, uint32_t co
 		llc_mask_base <<= 1;
 		llc_mask_base += 1;
 	}
-	printf("llc mask base = 0x%.5x\n", llc_mask_base);
 
-	while(llc_mask_base & llc_mask == 0){
+	while( (llc_mask_base & llc_mask) == 0){
+		printf("Base <<\n");
 		llc_mask_base <<= llc_cache_lines_per_cos;
 	}	
+	printf("llc mask base = 0x%.5x\n", llc_mask_base);
 
 	//create cos mask for every cos
 	for(i=0; i < cos_nb; ++i){
