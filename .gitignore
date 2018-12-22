@@ -3,5 +3,6 @@ obj/*
 lib
 lib/*
 *.o
+*.so
 *.a
 *.app
