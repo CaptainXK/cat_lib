@@ -3,17 +3,18 @@
 CC := gcc
 OBJ_DIR := obj
 LIB_DIR := lib
-SRCS := $(wildcard *.c)
-OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRCS) )
-INC := -I.
+SRC_DIR := src
+SRCS := $(wildcard $(SRC_DIR)/*.c)
+OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS)) )
+INC := -I./src
 CFLAGS := -g3 -O2
 LIBS := -lpqos
 
-test.app:check_obj_dir $(OBJS)
-	$(CC) $(INC) $(OBJS) -o $@ $(CFLAGS) $(LIBS)
+test.app : check_obj_dir $(OBJS) main.c
+	$(CC) $(INC) $(OBJS) main.c -o $@ $(CFLAGS) $(LIBS)
 
-slib:check_lib_dir $(OBJS)
-	ar crv $(LIB_DIR)/libcat.a $(OBJ_DIR)/*.o
+slib : check_lib_dir $(OBJS)
+	ar crv libcat.a $(OBJ_DIR)/*.o
 
 check_obj_dir:
 	@if test ! -d $(OBJ_DIR);\
@@ -27,13 +28,13 @@ check_lib_dir:
 		mkdir $(LIB_DIR);\
 	fi
 
-$(OBJ_DIR)/%.o:%.c
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	$(CC) $(INC) -c $< -o $@ $(CFLAGS)
 
 
-test:test.app
+test : test.app
 	$(EXEC) ./test.app
 
 
 clean:
-	rm -r $(OBJ_DIR)/*.o *.app lib/*
+	rm -r $(OBJ_DIR)/*.o *.app *.a *.so
